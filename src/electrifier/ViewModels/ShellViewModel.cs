@@ -29,26 +29,20 @@ namespace electrifier.ViewModels;
 public partial class ShellViewModel : ObservableRecipient
 {
     [ObservableProperty]
-    private bool isBackEnabled;
-    [ObservableProperty]
-    private bool isForwardEnabled = true;
-    [ObservableProperty]
     private object? selected;
 
     /// <summary>
     /// Gets the build version description.
     /// Necessary for the xaml page to access the build version description.
     /// </summary>
-    [ObservableProperty]
-    public string m_buildNumber = "1.24.504";
-    [ObservableProperty]
-    public string m_versionDescription = "may the 4th be with us";
-    [ObservableProperty]
-    public readonly string m_buildVersionDescription = "1.24.504 /* TODO concatenate */";
+//    public string m_buildNumber = "1.24.504";
+//    public string m_versionDescription = "may the 4th be with us";
+    public readonly string BuildVersionDescription = "1.24.504 /* TODO concatenate */";
 
     public INavigationService NavigationService
     {
         get;
+        private set;
     }
     public INavigationViewService NavigationViewService
     {
@@ -70,7 +64,7 @@ public partial class ShellViewModel : ObservableRecipient
 
     private void OnNavigated(object sender, NavigationEventArgs e)
     {
-        IsBackEnabled = NavigationService.CanGoBack;
+//        IsBackEnabled = NavigationService.CanGoBack;
 
         if (e.SourcePageType == typeof(SettingsPage))
         {
