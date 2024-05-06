@@ -21,24 +21,43 @@
         <Grid>
             <CommandBar Grid.Row="1"
                         Background="Transparent"
-                        DefaultLabelPosition="Collapsed"
+                        DefaultLabelPosition="Right"
                         HorizontalAlignment="Left"
                         IsOpen="False"
                         IsSticky="True">
-                <AppBarButton Icon="NewFolder"
-                              Label="NewFolder" />
+                <AppBarElementContainer VerticalAlignment="Center">
+                    <ComboBox PlaceholderText="New"
+                              VerticalContentAlignment="Bottom">
+                        <x:String>Folder</x:String>
+                        <x:String>Shortcut</x:String>
+                    </ComboBox>
+                </AppBarElementContainer>
                 <AppBarSeparator />
                 <AppBarButton Icon="Cut"
+                              IsEnabled="False"
                               Label="Cut" />
                 <AppBarButton Icon="Copy"
+                              IsEnabled="False"
                               Label="Copy" />
                 <AppBarButton Icon="Paste"
+                              IsEnabled="False"
                               Label="Paste" />
+                <AppBarButton Icon="Rename"
+                              IsEnabled="False"
+                              Label="Rename" />
                 <AppBarButton Icon="Share"
+                              IsEnabled="False"
                               Label="Share" />
                 <AppBarButton Icon="Delete"
+                              IsEnabled="False"
                               Label="Delete" />
                 <AppBarSeparator />
+                <AppBarButton Icon="Sort"
+                              Label="Sort" />
+                <AppBarButton Icon="Bullets"
+                              Label="View" />
+                <AppBarButton Icon="Filter"
+                              Label="Filter" />
             </CommandBar>
         </Grid>
         <Grid x:Name="ContentAreaGrid"

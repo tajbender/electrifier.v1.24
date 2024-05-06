@@ -36,8 +36,8 @@ public partial class ShellViewModel : ObservableRecipient
     /// Necessary for the xaml page to access the build version description.
     /// </summary>
 //    public string m_buildNumber = "1.24.504";
-//    public string m_versionDescription = "may the 4th be with us";
-    public readonly string BuildVersionDescription = "1.24.504 /* TODO concatenate */";
+//    public string m_versionDescription = "may the 4th";
+    public readonly string BuildVersionDescription = "1.24.504: may the 4th";   /* TODO concatenate */
 
     public INavigationService NavigationService
     {
