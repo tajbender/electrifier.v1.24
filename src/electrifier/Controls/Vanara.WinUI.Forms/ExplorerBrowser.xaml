@@ -77,7 +77,7 @@
                 BorderBrush="DarkRed"
                 BorderThickness="7">
             <TreeView x:Name="TreeView"
-                      ItemsSource="{x:Bind TreeViewItems}"
+                      ItemsSource="{x:Bind Items}"
                       ItemTemplate="{StaticResource ShellTreeViewItemTemplate}" />
         </Border>
         <controls:GridSplitter x:Name="GridSplitter"
@@ -94,7 +94,7 @@
             <GridView x:Name="GridView"
                       ItemContainerStyle="{StaticResource ShellGridViewItemContainerStyle}"
                       ItemTemplate="{StaticResource ShellGridViewItemTemplate}"
-                      ItemsSource="{x:Bind GridViewItems}"
+                      ItemsSource="{x:Bind Items}"
                       SelectionMode="Extended" />
         </Border>
     </Grid>

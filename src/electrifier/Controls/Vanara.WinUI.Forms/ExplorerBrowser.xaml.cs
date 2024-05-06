@@ -47,22 +47,9 @@ public partial class ExplorerBrowser : UserControl, IWinUIExplorerBrowser
     {
         get;
     }
-    private ShellItemCollection GridViewItems
-    {
-        get;
-    }
-    private ShellItemCollection TreeViewItems
-    {
-        get;
-    }
 
     private readonly ShellItem m_CurrentFolder;
 
-    public ShellItem CurrentFolder
-    {
-        get => m_CurrentFolder;
-        private set => PrepareNavigation(value);
-    }
 
     public ExplorerBrowser()
     {
@@ -72,47 +59,22 @@ public partial class ExplorerBrowser : UserControl, IWinUIExplorerBrowser
 
         History = new IWinUIExplorerBrowser.NavigationLog(this);
         Items = new ShellItemCollection(this, SVGIO.SVGIO_ALLVIEW);
-        GridViewItems = new ShellItemCollection(this, SVGIO.SVGIO_ALLVIEW);
-        TreeViewItems = new ShellItemCollection(this, SVGIO.SVGIO_ALLVIEW);
-    }
 
-    /// <summary>Prepare Navigation for the specified folder.</summary>
-    /// <param name="shellItem">The folder to prepare Navigation for</param>
-    /// <exception cref="ArgumentNullException">shellItem is null</exception>
-    private void PrepareNavigation(ShellItem shellItem)
-    {
-        var navigationTarget = shellItem ?? throw new ArgumentNullException(nameof(shellItem));
-        var targetPath = navigationTarget.ParsingName;
-
-        if (targetPath != null)
-        {
-            //targetPath = Path.Combine(targetPath, "*");
-        }
-
-
-        // TODO: implement navigation history
-        // TODO: Lock member variables to prevent reentrancy
-        //finally { m_CurrentFolder = new_CurrentFolder; }
-
-        try
-        {
-            // TODO: build item arrays temporarily, finally assign them to the Items property
-            //var targetItems = shellItem.GetChildren(SHCONTF.SHCONTF_FOLDERS | SHCONTF.SHCONTF_NONFOLDERS);
-
-            //Items.Clear();
-            //Items.AddRange(shellItem.GetChildren(SHCONTF.SHCONTF_FOLDERS | SHCONTF.SHCONTF_NONFOLDERS));
-        }
-        catch
-        {
-            throw;
-        }
+        NavigateTo(m_CurrentFolder);
     }
 
     /// <summary>Let ExplorerBrowser navigate to the specified folder.</summary>
     /// <param name="shellItem">Folder to navigate to</param>
     internal void NavigateTo(ShellItem shellItem)     /* Info, was: public void NavigateTo(ShellItem shellItem) */
     {
+        if(shellItem == null)
+
+        {
+            //Items.Clear();
+            return;
+        }
+
+       //Items.Populate(m_CurrentFolder);
         // Todo: if shellItem is a file, trigger event to open the file with the caller's default application
-        PrepareNavigation(shellItem);
     }
 }

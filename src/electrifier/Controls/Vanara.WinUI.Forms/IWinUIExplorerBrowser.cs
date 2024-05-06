@@ -314,5 +314,7 @@ internal interface IWinUIExplorerBrowser
         /// <summary>Returns an enumerator that iterates through the collection.</summary>
         /// <returns>An enumerator that can be used to iterate through the collection.</returns>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        //public abstract void Populate(ShellItem folder);
     }
 }

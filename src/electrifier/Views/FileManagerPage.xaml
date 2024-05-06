@@ -39,17 +39,6 @@
                 <AppBarButton Icon="Delete"
                               Label="Delete" />
                 <AppBarSeparator />
-                <AppBarElementContainer>
-                </AppBarElementContainer>
-                <CommandBar.SecondaryCommands>
-                    <AppBarButton Icon="Setting"
-                                  Label="Settings">
-                        <AppBarButton.KeyboardAccelerators>
-                            <KeyboardAccelerator Modifiers="Control"
-                                                 Key="I" />
-                        </AppBarButton.KeyboardAccelerators>
-                    </AppBarButton>
-                </CommandBar.SecondaryCommands>
             </CommandBar>
         </Grid>
         <Grid x:Name="ContentAreaGrid"
@@ -124,10 +113,9 @@
                                              VerticalAlignment="Stretch" />
             </Grid>
         </Grid>
-        <CommandBar x:Name="BottomStatusCommandBar"
-                    Grid.Row="3"
+        <CommandBar Grid.Row="3"
                     Background="Transparent"
-                    DefaultLabelPosition="Right"
+                    DefaultLabelPosition="Collapsed"
                     HorizontalAlignment="Left"
                     IsOpen="False"
                     IsSticky="True">
@@ -141,15 +129,6 @@
                           Label="{ x:Bind FileCount}"
                           ToolTipService.ToolTip="Number of Files" />
             <AppBarSeparator />
-            <CommandBar.SecondaryCommands>
-                <AppBarButton Icon="Setting"
-                              Label="Settings">
-                    <AppBarButton.KeyboardAccelerators>
-                        <KeyboardAccelerator Modifiers="Control"
-                                             Key="I" />
-                    </AppBarButton.KeyboardAccelerators>
-                </AppBarButton>
-            </CommandBar.SecondaryCommands>
         </CommandBar>
     </Grid>
 </Page>
