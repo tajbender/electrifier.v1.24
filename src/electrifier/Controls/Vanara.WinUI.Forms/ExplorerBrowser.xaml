@@ -66,11 +66,11 @@
                                Text="{x:Bind Name}" />
                 </Grid>
             </DataTemplate>
-            <Style x:Key="ShellGridViewItemContainerStyle"
+            <!--<Style x:Key="ShellGridViewItemContainerStyle"
                    TargetType="GridViewItem">
                 <Setter Property="Margin"
                         Value="3" />
-            </Style>
+            </Style>-->
         </Grid.Resources>
         <Border x:Name="TreeViewBorder"
                 Grid.Column="0"
@@ -78,7 +78,8 @@
                 BorderThickness="7">
             <TreeView x:Name="TreeView"
                       ItemsSource="{x:Bind Items}"
-                      ItemTemplate="{StaticResource ShellTreeViewItemTemplate}" />
+                       />
+            <!-- todo: ItemTemplate="{StaticResource ShellTreeViewItemTemplate}" -->
         </Border>
         <controls:GridSplitter x:Name="GridSplitter"
                                Grid.Column="1"
@@ -91,11 +92,11 @@
                 Grid.Column="2"
                 BorderBrush="DarkOrange"
                 BorderThickness="7">
-            <GridView x:Name="GridView"
+            <!--<GridView x:Name="GridView"
                       ItemContainerStyle="{StaticResource ShellGridViewItemContainerStyle}"
                       ItemTemplate="{StaticResource ShellGridViewItemTemplate}"
                       ItemsSource="{x:Bind Items}"
-                      SelectionMode="Extended" />
+                      SelectionMode="Extended" />-->
         </Border>
     </Grid>
 </UserControl>

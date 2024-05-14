@@ -45,11 +45,11 @@ public partial class ExplorerBrowser : UserControl, IWinUIExplorerBrowser
     }
     private ShellItemCollection Items
     {
-        get;
+        get; 
+        //set; // TODO: Remove set?
     }
 
     private readonly ShellItem m_CurrentFolder;
-
 
     public ExplorerBrowser()
     {
@@ -60,21 +60,48 @@ public partial class ExplorerBrowser : UserControl, IWinUIExplorerBrowser
         History = new IWinUIExplorerBrowser.NavigationLog(this);
         Items = new ShellItemCollection(this, SVGIO.SVGIO_ALLVIEW);
 
-        NavigateTo(m_CurrentFolder);
+        //Navigate(m_CurrentFolder);
     }
 
     /// <summary>Let ExplorerBrowser navigate to the specified folder.</summary>
     /// <param name="shellItem">Folder to navigate to</param>
-    internal void NavigateTo(ShellItem shellItem)     /* Info, was: public void NavigateTo(ShellItem shellItem) */
+    /// <remarks>TODO: if shellItem is a file, trigger event to open the file with the caller's default application</remarks>
+    public void Navigate(ShellItem shellItem, ExplorerBrowserNavigationItemCategory category = ExplorerBrowserNavigationItemCategory.Default)
     {
-        if(shellItem == null)
-
+        if (shellItem == null)
         {
             //Items.Clear();
             return;
         }
 
-       //Items.Populate(m_CurrentFolder);
-        // Todo: if shellItem is a file, trigger event to open the file with the caller's default application
+        //        Items = GetItemsArray(SVGIO.SVGIO_ALLVIEW);
+
+
+        ///// Vanara code
+        // if (explorerBrowserControl is null)
+        // {
+        //     antecreationNavigationTarget = (shellItem, category);
+        // }
+        // else if (shellItem is not null)
+        // {
+        //     var hr = explorerBrowserControl.BrowseToObject(shellItem.IShellItem, (SBSP)category);
+        //     if (hr == HRESULT_RESOURCE_IN_USE || hr == HRESULT_CANCELLED)
+        //         OnNavigationFailed(new NavigationFailedEventArgs { FailedLocation = shellItem });
+        //     else if (hr.Failed)
+        //         throw new ArgumentException("Unable to browse to this shell item.", nameof(shellItem), hr.GetException());
+        // }
+    }
+
+    public ShellItemArray? GetItemsArray(SVGIO opt)
+    {
+        // 	public ShellItemArray(IEnumerable<ShellItem> shellItems) : this(shellItems.Select(i => (IntPtr)i.PIDL).ToArray())
+        List<ShellItem> items = new();
+
+        items.Add(new ShellItem(@"C:\"));
+        items.Add(new ShellItem(@"D:\"));
+
+        var result = new ShellItemArray(items);
+
+        return result;
     }
 }

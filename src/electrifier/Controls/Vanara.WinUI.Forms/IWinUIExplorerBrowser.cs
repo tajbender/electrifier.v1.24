@@ -14,8 +14,110 @@ namespace electrifier.Controls.Vanara.WinUI.Forms;
 /// Interface for the (WinUI3 based) <see cref="ExplorerBrowser"/> control.
 /// It is a clone of <a href="https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-iexplorerbrowser">Win32API - ExplorerBrowser</a>.
 /// </summary>
-internal interface IWinUIExplorerBrowser
+public interface IWinUIExplorerBrowser
 {
+    /// <summary>Flags specifying the folder to be browsed.</summary>
+    [Flags]
+    public enum ExplorerBrowserNavigationItemCategory : uint
+    {
+        /// <summary>An absolute PIDL, relative to the desktop.</summary>
+        Absolute = SBSP.SBSP_ABSOLUTE,
+
+        /// <summary>Windows Vista and later. Navigate without the default behavior of setting focus into the new view.</summary>
+        ActivateNoFocus = SBSP.SBSP_ACTIVATE_NOFOCUS,
+
+        /// <summary>Enable auto-navigation.</summary>
+        AllowAutoNavigate = SBSP.SBSP_ALLOW_AUTONAVIGATE,
+
+        /// <summary>
+        /// Microsoft Internet Explorer 6 Service Pack 2 (SP2) and later. The navigation was possibly initiated by a web page with scripting
+        /// code already present on the local system.
+        /// </summary>
+        CallerUntrusted = SBSP.SBSP_CALLERUNTRUSTED,
+
+        /// <summary>
+        /// Windows 7 and later. Do not add a new entry to the travel log. When the user enters a search term in the search box and
+        /// subsequently refines the query, the browser navigates forward but does not add an additional travel log entry.
+        /// </summary>
+        CreateNoHistory = SBSP.SBSP_CREATENOHISTORY,
+
+        /// <summary>
+        /// Use default behavior, which respects the view option (the user setting to create new windows or to browse in place). In most
+        /// cases, calling applications should use this flag.
+        /// </summary>
+        Default = SBSP.SBSP_DEFBROWSER,
+
+        /// <summary>Use the current window.</summary>
+        UseCurrentWindow = SBSP.SBSP_DEFMODE,
+
+        /// <summary>
+        /// Specifies a folder tree for the new browse window. If the current browser does not match the SBSP.SBSP_EXPLOREMODE of the browse
+        /// object call, a new window is opened.
+        /// </summary>
+        ExploreMode = SBSP.SBSP_EXPLOREMODE,
+
+        /// <summary>
+        /// Windows Internet Explorer 7 and later. If allowed by current registry settings, give the browser a destination to navigate to.
+        /// </summary>
+        FeedNavigation = SBSP.SBSP_FEEDNAVIGATION,
+
+        /// <summary>Windows Vista and later. Navigate without clearing the search entry field.</summary>
+        KeepSearchText = SBSP.SBSP_KEEPWORDWHEELTEXT,
+
+        /// <summary>Navigate back, ignore the PIDL.</summary>
+        NavigateBack = SBSP.SBSP_NAVIGATEBACK,
+
+        /// <summary>Navigate forward, ignore the PIDL.</summary>
+        NavigateForward = SBSP.SBSP_NAVIGATEFORWARD,
+
+        /// <summary>Creates another window for the specified folder.</summary>
+        NewWindow = SBSP.SBSP_NEWBROWSER,
+
+        /// <summary>Suppress selection in the history pane.</summary>
+        NoHistorySelect = SBSP.SBSP_NOAUTOSELECT,
+
+        /// <summary>Do not transfer the browsing history to the new window.</summary>
+        NoTransferHistory = SBSP.SBSP_NOTRANSFERHIST,
+
+        /// <summary>
+        /// Specifies no folder tree for the new browse window. If the current browser does not match the SBSP.SBSP_OPENMODE of the browse
+        /// object call, a new window is opened.
+        /// </summary>
+        NoFolderTree = SBSP.SBSP_OPENMODE,
+
+        /// <summary>Browse the parent folder, ignore the PIDL.</summary>
+        ParentFolder = SBSP.SBSP_PARENT,
+
+        /// <summary>Windows 7 and later. Do not make the navigation complete sound for each keystroke in the search box.</summary>
+        PlayNoSound = SBSP.SBSP_PLAYNOSOUND,
+
+        /// <summary>Enables redirection to another URL.</summary>
+        Redirect = SBSP.SBSP_REDIRECT,
+
+        /// <summary>A relative PIDL, relative to the current folder.</summary>
+        Relative = SBSP.SBSP_RELATIVE,
+
+        /// <summary>Browse to another folder with the same Windows Explorer window.</summary>
+        SameWindow = SBSP.SBSP_SAMEBROWSER,
+
+        /// <summary>Microsoft Internet Explorer 6 Service Pack 2 (SP2) and later. The navigate should allow ActiveX prompts.</summary>
+        TrustedForActiveX = SBSP.SBSP_TRUSTEDFORACTIVEX,
+
+        /// <summary>
+        /// Microsoft Internet Explorer 6 Service Pack 2 (SP2) and later. The new window is the result of a user initiated action. Trust the
+        /// new window if it immediately attempts to download content.
+        /// </summary>
+        TrustFirstDownload = SBSP.SBSP_TRUSTFIRSTDOWNLOAD,
+
+        /// <summary>
+        /// Microsoft Internet Explorer 6 Service Pack 2 (SP2) and later. The window is navigating to an untrusted, non-HTML file. If the
+        /// user attempts to download the file, do not allow the download.
+        /// </summary>
+        UntrustedForDownload = SBSP.SBSP_UNTRUSTEDFORDOWNLOAD,
+
+        /// <summary>Write no history of this navigation in the history Shell folder.</summary>
+        WriteNoHistory = SBSP.SBSP_WRITENOHISTORY
+    }
     /// <summary>The navigation log is a history of the locations visited by the <see cref="ExplorerBrowser"/>.</summary>
     public class NavigationLog
     {
@@ -134,7 +236,7 @@ internal interface IWinUIExplorerBrowser
 
             var shellItem = Locations[index];
             pendingNavigation = new PendingNavigation(shellItem, index);
-            parent.NavigateTo(shellItem);
+            parent.Navigate(shellItem);
             return true;
         IL_002f:
             return false;
@@ -273,27 +375,30 @@ internal interface IWinUIExplorerBrowser
         }
     }
 
+    /// <summary>Gets the items in the ExplorerBrowser as an IShellItemArray</summary>
+    /// <returns>An <see cref="IShellItemArray"/> instance or <see langword="null"/> if not available.</returns>
+    public abstract ShellItemArray? GetItemsArray(SVGIO opt);
+
     /// <summary>Represents a collection of <see cref="ShellItem"/> attached to an <see cref="ExplorerBrowser"/>.</summary>
     public class ShellItemCollection : IReadOnlyList<ShellItem>
     {
         private readonly IWinUIExplorerBrowser eb;
         private readonly SVGIO option;
-        private readonly List<ShellItem> items;
+        private readonly ShellItemArray items;
 
         internal ShellItemCollection(IWinUIExplorerBrowser eb, SVGIO opt)
         {
             this.eb = eb;
             option = opt;
 
-            items = new List<ShellItem>();
-            // new List<IShellItem>() => eb.GetItemsArray(option);
+            items = eb.GetItemsArray(option);
         }
 
         /// <summary>Gets the number of elements in the collection.</summary>
         /// <value>Returns a <see cref="int"/> value.</value>
         public int Count => items.Count;
 
-        private /*ShellItemCollection */ List<ShellItem> Items => items;
+        private /*ShellItemCollection */ ShellItemArray Items => items;
         //var array = eb.GetItemsArray(option);
         //try
         //{
@@ -314,7 +419,5 @@ internal interface IWinUIExplorerBrowser
         /// <summary>Returns an enumerator that iterates through the collection.</summary>
         /// <returns>An enumerator that can be used to iterate through the collection.</returns>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        //public abstract void Populate(ShellItem folder);
     }
 }
