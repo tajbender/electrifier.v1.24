@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using Vanara.PInvoke;
@@ -14,6 +15,7 @@ namespace electrifier.Controls.Vanara.WinUI.Forms;
 /// Interface for the (WinUI3 based) <see cref="ExplorerBrowser"/> control.
 /// It is a clone of <a href="https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-iexplorerbrowser">Win32API - ExplorerBrowser</a>.
 /// </summary>
+[SupportedOSPlatform("windows")]
 public interface IWinUIExplorerBrowser
 {
     /// <summary>Flags specifying the folder to be browsed.</summary>
@@ -118,7 +120,9 @@ public interface IWinUIExplorerBrowser
         /// <summary>Write no history of this navigation in the history Shell folder.</summary>
         WriteNoHistory = SBSP.SBSP_WRITENOHISTORY
     }
-    /// <summary>The navigation log is a history of the locations visited by the <see cref="ExplorerBrowser"/>.</summary>
+    /// <summary>The navigation log is a history of the locations visited by the <see cref="ExplorerBrowser"/>.
+    /// TODO: There's an single class in Vanara that holds an NavigationLog
+    /// </summary>
     public class NavigationLog
     {
         /// <summary>A navigation traversal request.</summary>
@@ -172,7 +176,7 @@ public interface IWinUIExplorerBrowser
         // <remarks>Setting this property will cause the <see cref="NavigationLogChanged"/> event to fire.</remarks>
         // </summary>
         public int CurrentLocationIndex { get; set; } = -1;
-        
+
 
 
         // <summary>The navigation log</summary>
@@ -420,4 +424,76 @@ public interface IWinUIExplorerBrowser
         /// <returns>An enumerator that can be used to iterate through the collection.</returns>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
+}
+
+
+// TreeViewNode
+public class ShellTreeViewItem
+{
+    public ShellTreeViewItem(ShellItem shellItem)
+    {
+        ShellItem = shellItem ?? throw new ArgumentNullException(nameof(shellItem));
+        Children = new List<ShellTreeViewItem>();
+    }
+
+    public ShellItem ShellItem
+    {
+        get;
+    }
+
+    public string Name => ShellItem.GetDisplayName(ShellItemDisplayString.NormalDisplay);
+
+    //public ShellTreeViewItem Parent
+    //{
+    //    get;
+    //}
+
+    public List<ShellTreeViewItem> Children
+    {
+        get; private set;
+    }
+
+    internal void EnumerateChildren()
+    {
+        if (Children.Count == 0)
+        {
+            if (ShellItem is ShellFolder folder)
+            {
+                var children = folder.EnumerateChildren(FolderItemFilter.Folders);
+
+                foreach (var child in children)
+                {
+                    Children.Add(new ShellTreeViewItem(child));
+                }
+            }
+        }
+    }
+}
+
+public class ShellTreeViewItemCollection : IReadOnlyList<ShellTreeViewItem>
+{
+    private readonly IWinUIExplorerBrowser eb;
+    private readonly SVGIO option;
+    //private readonly ShellItemArray items;
+    private readonly List<ShellTreeViewItem> items;
+
+    internal ShellTreeViewItemCollection(IWinUIExplorerBrowser eb, SVGIO opt)
+    {
+        this.eb = eb;
+        option = opt;
+
+        var newItems = eb.GetItemsArray(option);
+        items = newItems.Select(i => new ShellTreeViewItem(i)).ToList();
+    }
+
+    public int Count => items.Count;
+
+    private /*ShellItemCollection */ List<ShellTreeViewItem> Items => items;
+    public ShellTreeViewItem this[int index] => items[index];
+
+    public IEnumerator<ShellTreeViewItem> GetEnumerator()
+        //=> Items.Select(ShellItem.Open).GetEnumerator();
+        => items.GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

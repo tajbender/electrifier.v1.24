@@ -49,18 +49,23 @@ public partial class ExplorerBrowser : UserControl, IWinUIExplorerBrowser
         //set; // TODO: Remove set?
     }
 
-    private readonly ShellItem m_CurrentFolder;
+    private List<ShellTreeViewItem> m_TreeViewItems = new();
 
-    public ExplorerBrowser()
+    private readonly ShellFolder m_CurrentFolder;
+
+    public ExplorerBrowser() : base()
     {
         InitializeComponent();
 
-        m_CurrentFolder = new ShellItem(@"C:\");
+        m_CurrentFolder = ShellFolder.Desktop;
 
         History = new IWinUIExplorerBrowser.NavigationLog(this);
         Items = new ShellItemCollection(this, SVGIO.SVGIO_ALLVIEW);
 
-        //Navigate(m_CurrentFolder);
+        m_TreeViewItems = new List<ShellTreeViewItem>();
+        var root = new ShellTreeViewItem(m_CurrentFolder);
+        m_TreeViewItems.Add(root);
+        root.EnumerateChildren();
     }
 
     /// <summary>Let ExplorerBrowser navigate to the specified folder.</summary>
@@ -97,8 +102,17 @@ public partial class ExplorerBrowser : UserControl, IWinUIExplorerBrowser
         // 	public ShellItemArray(IEnumerable<ShellItem> shellItems) : this(shellItems.Select(i => (IntPtr)i.PIDL).ToArray())
         List<ShellItem> items = new();
 
-        items.Add(new ShellItem(@"C:\"));
-        items.Add(new ShellItem(@"D:\"));
+        var list = m_CurrentFolder.EnumerateChildren(FolderItemFilter.Folders);
+
+        // FolderItemFilter filter /*= FolderItemFilter.Folders | FolderItemFilter.IncludeHidden | FolderItemFilter.NonFolders | FolderItemFilter.IncludeSuperHidden */
+
+        foreach (var item in list)
+        {
+            items.Add(item);
+        }
+
+        // see TreeViewItem.HasUnrealizedChildren:
+        // https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.treeviewitem?view=windows-app-sdk-1.5
 
         var result = new ShellItemArray(items);
 
