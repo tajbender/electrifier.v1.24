@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Vanara.PInvoke;
 using static Vanara.PInvoke.Shell32;
 using static Vanara.PInvoke.Shell32.ShellUtil;
+using static electrifier.Controls.Vanara.TempShellUtil;
 
 namespace Vanara.Windows.Shell
 {
