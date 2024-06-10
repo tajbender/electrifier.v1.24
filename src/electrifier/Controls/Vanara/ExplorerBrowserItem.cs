@@ -70,7 +70,7 @@ public class ExplorerBrowserItem
         IsExpanded = true;
         IsSelected = false;
 
-        ImageIconSource = shItem.IsFolder
+        ImageIconSource = IsFolder
             ? DefaultFolderImage
             : DefaultFileImage;
     }

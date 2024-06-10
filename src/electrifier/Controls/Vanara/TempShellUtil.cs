@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -63,5 +64,20 @@ namespace electrifier.Controls.Vanara
 				imgSz = GetSize(hbmp);
 			return hr;
 		}
+    }
+
+    public static class GdiObjExtensions2
+    {
+        /// <summary>Creates a <see cref="Bitmap"/> from an <see cref="SafeHBITMAP"/> preserving transparency, if possible.</summary>
+        /// <param name="hbmp">The SafeHBITMAP value.</param>
+        /// <returns>The Bitmap instance. If <paramref name="hbmp"/> is a <c>NULL</c> handle, <see langword="null"/> is returned.</returns>
+        public static Bitmap ToBitmap(this SafeHBITMAP hbmp) => ToBitmap((HBITMAP)hbmp);
+        //public static Bitmap ToBitmap(this SafeHBITMAP hbmp) => ToBitmap((HBITMAP)hbmp);
+
+        /// <summary>Creates a <see cref="Bitmap"/> from an <see cref="HBITMAP"/> preserving transparency, if possible.</summary>
+        /// <param name="hbmp">The HBITMAP value.</param>
+        /// <returns>The Bitmap instance. If <paramref name="hbmp"/> is a <c>NULL</c> handle, <see langword="null"/> is returned.</returns>
+        public static Bitmap ToBitmap(this in HBITMAP hbmp) => Image.FromHbitmap((IntPtr)hbmp);
+
     }
 }
