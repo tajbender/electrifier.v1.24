@@ -1,13 +1,14 @@
-﻿using System.Diagnostics;
-using System.Text;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Media;
+using System.Diagnostics;
+using System.Text;
 using Vanara.Windows.Shell;
 
 namespace electrifier.Controls.Vanara;
 
 [DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(), nq}}")]
-public class ExplorerBrowserItem
+public class ExplorerBrowserItem : ObservableRecipient
 {
     private static readonly BitmapImage DefaultFileImage = new(new Uri("ms-appx:///Assets/Views/Workbench/Shell32 Default unknown File.ico"));
     private static readonly BitmapImage DefaultFolderImage = new(new Uri("ms-appx:///Assets/Views/Workbench/Shell32 Default Folder.ico"));
@@ -19,7 +20,7 @@ public class ExplorerBrowserItem
     }
     public bool IsFolder
     {
-        get; private init;
+        get;
     }
     public ShellItem ShellItem
     {
@@ -99,23 +100,7 @@ public class ExplorerBrowserItem
         return children.Select(shellItem => new ExplorerBrowserItem(this.Owner, shellItem)).ToList();
     }
 
-    //internal static ExplorerBrowserItem? Parent(ShellItem shItem)
-    //{
-    //    if (shItem is null)
-    //    {
-    //        throw new ArgumentNullException(nameof(shItem));
-    //    }
 
-    //    if (shItem.Parent is null)
-    //    {
-    //        return null;
-    //    }
-
-    //    return new ExplorerBrowserItem(shItem.Parent, overrideDisplayName: "..")
-    //    {
-    //        IsFolder = true,
-    //    };
-    //}
 
     private string GetDebuggerDisplay()
     {

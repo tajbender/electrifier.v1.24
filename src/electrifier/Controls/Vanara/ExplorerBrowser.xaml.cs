@@ -46,11 +46,7 @@ public sealed partial class ExplorerBrowser : UserControl
 
         try
         {
-            foreach (var item in rootItem.GetChildItems(shItem))
-            {
-                rootItem.Children.Add(item);
-                //newItems.Add(item);     // TODO: Add directly to ExplorerBrowserItem
-            }
+            rootItem.Children = rootItem.GetChildItems(shItem);
         }
         finally
         {
