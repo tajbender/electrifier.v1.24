@@ -91,7 +91,8 @@ public class ExplorerBrowserItem : ObservableRecipient
 
     public List<ExplorerBrowserItem> GetChildItems(ShellItem enumerationShellItem)
     {
-        var children = EnumerateChildren(enumerationShellItem, filter: FolderItemFilter.Storage);
+        var children = EnumerateChildren(enumerationShellItem,
+            filter: FolderItemFilter.Folders | FolderItemFilter.NonFolders | FolderItemFilter.IncludeHidden );
 
         // TODO:
         //  IsEnumerated = true;

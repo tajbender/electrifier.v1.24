@@ -28,12 +28,8 @@
             </DataTemplate>
         </Grid.Resources>
         <GridView x:Name="GridView"
-                  IsItemClickEnabled="True"
-                  ItemClick="GridView_OnItemClick"
-                  SelectionMode="Single"
                   ItemTemplate="{StaticResource ExplorerBrowserItemTemplate}" >
-            <!--                   ItemsSource="{x:Bind GridShellItems, Mode=OneWay}"
-                                        {x:Bind MainViewModel.Items, Mode=OneWay}-->
+            <!--                   ItemsSource="{x:Bind GridShellItems, Mode=OneWay}" -->
 
             <!--<GridView.ItemContainerStyle>
                 <Style TargetType="GridViewItem"

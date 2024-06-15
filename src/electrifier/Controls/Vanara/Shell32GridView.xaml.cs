@@ -9,10 +9,16 @@ namespace electrifier.Controls.Vanara;
 [DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(), nq}}")]
 public sealed partial class Shell32GridView : UserControl
 {
+    public GridView NativeGridView => GridView;
+
     public Shell32GridView()
     {
         InitializeComponent();
         DataContext = this;
+
+        NativeGridView.IsItemClickEnabled = true;
+        NativeGridView.SelectionMode = ListViewSelectionMode.Single;
+        // INFO: What is this? NativeGridView.IsSynchronizedWithCurrentItem = true;
     }
 
     public void SetItemsSource(List<ExplorerBrowserItem> itemSourceCollection)
@@ -21,18 +27,7 @@ public sealed partial class Shell32GridView : UserControl
         acv.SortDescriptions.Add(new SortDescription("IsFolder", SortDirection.Descending));
         acv.SortDescriptions.Add(new SortDescription("DisplayName", SortDirection.Ascending));
 
-        GridView.ItemsSource = acv;
-    }
-
-    private void GridView_OnItemClick(object sender, ItemClickEventArgs e)
-    {
-        if (e.ClickedItem is not ExplorerBrowserItem ebItem)
-        {
-            return;
-        }
-
-        var shItem = ebItem.ShellItem;
-        ebItem.Owner.TryNavigate(shItem);
+        NativeGridView.ItemsSource = acv;
     }
 
     private string GetDebuggerDisplay()

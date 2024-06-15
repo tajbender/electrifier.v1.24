@@ -32,8 +32,13 @@ public sealed partial class ExplorerBrowser : UserControl
 
         var currentFolderExplorerBrowserItem = new ExplorerBrowserItem(this, CurrentFolder);
         ShellTreeView.InitializeRoot(currentFolderExplorerBrowserItem);
-        ShellTreeView.myTreeView.SelectionChanged += MyTreeView_SelectionChanged;
-        //ShellTreeView.myTreeView.SelectedItem = currentFolderExplorerBrowserItem;
+
+        ShellTreeView.NativeTreeView.SelectionChanged += NativeTreeView_SelectionChanged;
+        ShellGridView.NativeGridView.ItemClick += NativeGridView_ItemClick;
+            // ItemFromContainer
+
+
+        //ShellTreeView.NativeTreeView.SelectedItem = currentFolderExplorerBrowserItem;
 
         TryNavigate(CurrentFolder);
     }
@@ -57,14 +62,11 @@ public sealed partial class ExplorerBrowser : UserControl
         }
     }
 
-    private void MyTreeView_SelectionChanged(TreeView sender, TreeViewSelectionChangedEventArgs args)
+    private void NativeTreeView_SelectionChanged(TreeView sender, TreeViewSelectionChangedEventArgs args)
     {
-        var selectedNode = ShellTreeView.myTreeView.SelectedNode;
-        var selectedItem = ShellTreeView.myTreeView.SelectedItem;
-        var addedItems = args.AddedItems;
-        var removedItems= args.RemovedItems;
+        var selectedNode = ShellTreeView.NativeTreeView.SelectedNode;
 
-        Debug.Print($"MyTreeView_SelectionChanged SelectedItem: { selectedItem } ");
+        Debug.Print($"NativeTreeView_SelectionChanged selectedNode: { selectedNode } ");
         
         if (selectedNode != null)
         {
@@ -72,12 +74,20 @@ public sealed partial class ExplorerBrowser : UserControl
 
             if (nodeContent is ExplorerBrowserItem ebItem)
             {
-                Debug.Print($"nameof({MyTreeView_SelectionChanged}) - {ebItem}");
+                Debug.Print($"nameof({NativeTreeView_SelectionChanged}) - {ebItem}");
                 TryNavigate(ebItem.ShellItem);
             }
         }
     }
 
+    private void NativeGridView_ItemClick(object sender, ItemClickEventArgs e)
+    {
+        if (e.ClickedItem is ExplorerBrowserItem ebItem)
+        {
+            Debug.Assert(ebItem.Owner == this);
+            TryNavigate(ebItem.ShellItem);
+        }
+    }
 
 
     #region The following is original copy & paste from Vanara
