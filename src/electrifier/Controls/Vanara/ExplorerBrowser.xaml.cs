@@ -26,7 +26,7 @@ public sealed partial class ExplorerBrowser : UserControl
     public ShellIconExtractor IconExtractor;
     public int IconSize = 32;
 
-    private ObservableCollection<ExplorerBrowserItem2> _items;
+    private readonly ObservableCollection<ExplorerBrowserItem2> _items;
 
     public ExplorerBrowser()
     {
@@ -50,22 +50,21 @@ public sealed partial class ExplorerBrowser : UserControl
 
     private void ExplorerBrowser_Loading(Microsoft.UI.Xaml.FrameworkElement sender, object args)
     {
-        Debug.Print($"{nameof(ExplorerBrowser)}.Loading");
+        Debug.Print($"{nameof(ExplorerBrowser)} is Loading, currently {_items.Count()} items");
     }
 
     private void ExplorerBrowser_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
     {
-        Debug.Print($"{nameof(ExplorerBrowser)}.Loaded");
+        Debug.Print($"{nameof(ExplorerBrowser)} has been Loaded, currently {_items.Count()} items");
     }
 
     private void IconExtractor_IconExtracted(object? sender, ShellIconExtractedEventArgs e)
     {
-        //Debug.Print($"{nameof(IconExtractor_IconExtracted)}: { e.ToString() }");
     }
 
     private void IconExtractor_Complete(object? sender, EventArgs e)
     {
-        Debug.Print($"{nameof(IconExtractor)} completed {_items.Count()} items");
+        Debug.Print($"{nameof(IconExtractor)} {TaskStatus.RanToCompletion.ToString()}: {_items.Count()} items" );
     }
 
     private void NativeTreeView_SelectionChanged(TreeView sender, TreeViewSelectionChangedEventArgs args)
@@ -114,13 +113,13 @@ public sealed partial class ExplorerBrowser : UserControl
 public record ExplorerBrowserItem2
 {
     public readonly int ImageListIndex = -1;
-    public readonly Shell32.PIDL ItemId;
+    public readonly Shell32.PIDL ItemId = Shell32.PIDL.Null;
 
     public ExplorerBrowserItem2(int imageListIndex, Shell32.PIDL itemId)
     {
         ImageListIndex = imageListIndex;
-        ItemId = itemId;
+        ItemId = new Shell32.PIDL(itemId);
     }
 
-    public override string ToString() => base.ToString() + ItemId?.ToString();
+    public override string? ToString() => base.ToString() + ItemId?.ToString();
 }
