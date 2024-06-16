@@ -1,16 +1,12 @@
-using Microsoft.UI.Xaml.Controls;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using Vanara.Windows.Shell;
-using static electrifier.Controls.Vanara.Shell32TreeView;
+using System.Diagnostics;
+using System.Collections.ObjectModel;
+using Microsoft.UI.Xaml.Controls;
 
 namespace electrifier.Controls.Vanara;
 
-// https://github.com/dahall/Vanara/blob/master/Windows.Forms/Controls/ExplorerBrowser.cs
 
 // TODO: See also https://github.com/dahall/Vanara/blob/ac0a1ac301dd4fdea9706688dedf96d596a4908a/Windows.Shell.Common/StockIcon.cs
-
-
 
 public sealed partial class ExplorerBrowser : UserControl
 {
@@ -29,54 +25,13 @@ public sealed partial class ExplorerBrowser : UserControl
         DataContext = this;
         CurrentFolderItems = new List<ExplorerBrowserItem>();
         CurrentFolder = ShellFolder.Desktop;
-
-        var currentFolderExplorerBrowserItem = new ExplorerBrowserItem(this, CurrentFolder);
-        ShellTreeView.InitializeRoot(currentFolderExplorerBrowserItem);
-
-        ShellTreeView.NativeTreeView.SelectionChanged += NativeTreeView_SelectionChanged;
-        ShellGridView.NativeGridView.ItemClick += NativeGridView_ItemClick;
-            // ItemFromContainer
-
-
-        //ShellTreeView.NativeTreeView.SelectedItem = currentFolderExplorerBrowserItem;
-
-        TryNavigate(CurrentFolder);
-    }
-
-    public void TryNavigate(ShellItem shItem)
-    {
-
-        //var newItems = new List<ExplorerBrowserItem>();
-        var rootItem = new ExplorerBrowserItem(this, shItem);
-
-        try
-        {
-            rootItem.Children = rootItem.GetChildItems(shItem);
-        }
-        finally
-        {
-            CurrentFolderItems = rootItem.Children;
-            ShellTreeView.SetItemsSource(rootItem, CurrentFolderItems);
-            ShellGridView.SetItemsSource(CurrentFolderItems); // TODO: Maybe use bind in xaml
-            CurrentFolder = shItem;
-        }
     }
 
     private void NativeTreeView_SelectionChanged(TreeView sender, TreeViewSelectionChangedEventArgs args)
     {
-        var selectedNode = ShellTreeView.NativeTreeView.SelectedNode;
-
-        Debug.Print($"NativeTreeView_SelectionChanged selectedNode: { selectedNode } ");
-        
-        if (selectedNode != null)
+        if (args.AddedItems.Count > 0)
         {
-            var nodeContent = selectedNode.Content;
-
-            if (nodeContent is ExplorerBrowserItem ebItem)
-            {
-                Debug.Print($"nameof({NativeTreeView_SelectionChanged}) - {ebItem}");
-                TryNavigate(ebItem.ShellItem);
-            }
+            Debug.Print($"{nameof(NativeTreeView_SelectionChanged)}: {args.ToString()}");
         }
     }
 
@@ -84,8 +39,7 @@ public sealed partial class ExplorerBrowser : UserControl
     {
         if (e.ClickedItem is ExplorerBrowserItem ebItem)
         {
-            Debug.Assert(ebItem.Owner == this);
-            TryNavigate(ebItem.ShellItem);
+            Debug.Print($"{nameof(NativeGridView_ItemClick)}: {ebItem.ToString()}");
         }
     }
 
