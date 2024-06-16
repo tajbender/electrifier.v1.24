@@ -8,6 +8,7 @@ namespace electrifier.Controls.Vanara;
 public sealed partial class Shell32GridView : UserControl
 {
     public GridView NativeGridView => GridView;
+    public object ItemsSource => NativeGridView.ItemsSource;
 
     public Shell32GridView()
     {
@@ -16,16 +17,13 @@ public sealed partial class Shell32GridView : UserControl
 
         NativeGridView.IsItemClickEnabled = true;
         NativeGridView.SelectionMode = ListViewSelectionMode.Single;
+
         // INFO: What is this? NativeGridView.IsSynchronizedWithCurrentItem = true;
     }
 
     public void SetItemsSource(List<ExplorerBrowserItem2> items)
     {
-        var acv = new AdvancedCollectionView(items, true);
-        acv.SortDescriptions.Add(new SortDescription("IsFolder", SortDirection.Descending));
-        acv.SortDescriptions.Add(new SortDescription("DisplayName", SortDirection.Ascending));
-
-        NativeGridView.ItemsSource = acv;
+        NativeGridView.ItemsSource = items;
     }
 
     private string GetDebuggerDisplay()

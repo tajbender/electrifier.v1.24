@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using CommunityToolkit.WinUI.Collections;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Vanara.PInvoke;
@@ -26,14 +27,15 @@ public sealed partial class ExplorerBrowser : UserControl
     public ShellIconExtractor IconExtractor;
     public int IconSize = 32;
 
-    private readonly ObservableCollection<ExplorerBrowserItem2> _items;
+    private readonly List<ExplorerBrowserItem2> _items;
+    private Shell32GridView _listView => ShellGridView;
 
     public ExplorerBrowser()
     {
         InitializeComponent();
         DataContext = this;
         _currentFolder = ShellFolder.Desktop;
-        _items = new ObservableCollection<ExplorerBrowserItem2>();
+        _items = new List<ExplorerBrowserItem2>();
 
         Loading += ExplorerBrowser_Loading;
         Loaded += ExplorerBrowser_Loaded;
@@ -55,6 +57,8 @@ public sealed partial class ExplorerBrowser : UserControl
     private void ExplorerBrowser_Loaded(object sender, RoutedEventArgs e)
     {
         Debug.Print($"{nameof(ExplorerBrowser)} has been Loaded, current items {_items.Count}");
+
+        _listView.SetItemsSource(_items);
     }
 
     private void IconExtractor_Complete(object? sender, EventArgs e)
@@ -109,11 +113,13 @@ public record ExplorerBrowserItem2
 {
     public readonly int ImageListIndex = -1;
     public readonly Shell32.PIDL ItemId = Shell32.PIDL.Null;
+    public readonly string? DisplayName;
 
     public ExplorerBrowserItem2(int imageListIndex, Shell32.PIDL itemId)
     {
         ImageListIndex = imageListIndex;
         ItemId = new Shell32.PIDL(itemId);
+        DisplayName = itemId.ToString();
     }
 
     public override string? ToString() => base.ToString() + ItemId;
