@@ -1,7 +1,9 @@
 using Vanara.Windows.Shell;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using Microsoft.UI.Xaml.Controls;
+using Vanara.PInvoke;
 
 namespace electrifier.Controls.Vanara;
 
@@ -10,21 +12,55 @@ namespace electrifier.Controls.Vanara;
 
 public sealed partial class ExplorerBrowser : UserControl
 {
-    // TODO: Use ShellItemArray for ShellItem Collections
-    public List<ExplorerBrowserItem> CurrentFolderItems
+    private readonly ShellFolder _currentFolder;
+    public ShellFolder CurrentFolder
     {
-        get;
-        private set;
+        get => _currentFolder;
+        set
+        {
+            var ext = new ShellIconExtractor(value, IconSize);
+            ext.Start();
+        }
     }
 
-    public ShellItem CurrentFolder;
+    public ShellIconExtractor IconExtractor;
+    public int IconSize = 32;
 
     public ExplorerBrowser()
     {
         InitializeComponent();
         DataContext = this;
-        CurrentFolderItems = new List<ExplorerBrowserItem>();
-        CurrentFolder = ShellFolder.Desktop;
+        _currentFolder = ShellFolder.Desktop;
+        IconExtractor = new ShellIconExtractor(CurrentFolder, bmpSize: IconSize);
+        IconExtractor.IconExtracted += (sender, args) =>
+        {
+            var newItem = new ExplorerBrowserItem(args.ImageListIndex, args.ItemID);
+        };
+
+        this.Loading += ExplorerBrowser_Loading;
+        this.Loaded += ExplorerBrowser_Loaded;
+    }
+
+    private void ExplorerBrowser_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
+        _ = IconExtractor.ImageList;
+    }
+
+    private void ExplorerBrowser_Loading(Microsoft.UI.Xaml.FrameworkElement sender, object args)
+    {
+        _= IconExtractor.ImageList;
+    }
+
+    public record ExplorerBrowserItem
+    {
+        public readonly int ImageListIndex = -1;
+        public readonly Shell32.PIDL ItemId;
+
+        public ExplorerBrowserItem(int imageListIndex, Shell32.PIDL itemId)
+        {
+            ImageListIndex = imageListIndex;
+            ItemId = itemId;
+        }
     }
 
     private void NativeTreeView_SelectionChanged(TreeView sender, TreeViewSelectionChangedEventArgs args)
