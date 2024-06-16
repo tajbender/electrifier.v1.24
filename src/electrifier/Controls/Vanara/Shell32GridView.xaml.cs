@@ -1,8 +1,6 @@
-using Microsoft.UI.Xaml.Controls;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using CommunityToolkit.WinUI.Collections;
-using Vanara.PInvoke;
+using Microsoft.UI.Xaml.Controls;
 
 namespace electrifier.Controls.Vanara;
 

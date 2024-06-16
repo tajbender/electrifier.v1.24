@@ -1,11 +1,9 @@
-using Vanara.Windows.Shell;
-using System.Diagnostics;
 using System.Collections.ObjectModel;
-using System.Drawing;
+using System.Diagnostics;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Vanara.PInvoke;
-using CommunityToolkit.WinUI.Collections;
-
+using Vanara.Windows.Shell;
 
 namespace electrifier.Controls.Vanara;
 
@@ -37,6 +35,9 @@ public sealed partial class ExplorerBrowser : UserControl
         _currentFolder = ShellFolder.Desktop;
         _items = new ObservableCollection<ExplorerBrowserItem2>();
 
+        Loading += ExplorerBrowser_Loading;
+        Loaded += ExplorerBrowser_Loaded;
+
         IconExtractor = new ShellIconExtractor(CurrentFolder, bmpSize: IconSize);
         IconExtractor.IconExtracted += (sender, args) =>
         {
@@ -44,31 +45,28 @@ public sealed partial class ExplorerBrowser : UserControl
         };
         IconExtractor.Complete += IconExtractor_Complete;
         IconExtractor.Start();
-
-        this.Loading += ExplorerBrowser_Loading;
-        this.Loaded += ExplorerBrowser_Loaded;
     }
 
-    private void ExplorerBrowser_Loading(Microsoft.UI.Xaml.FrameworkElement sender, object args)
+    private void ExplorerBrowser_Loading(FrameworkElement sender, object args)
     {
-        Debug.Print($"{nameof(ExplorerBrowser)} is Loading, currently {_items.Count()} items");
+        Debug.Print($"{nameof(ExplorerBrowser)} is Loading, current items {_items.Count}");
     }
 
-    private void ExplorerBrowser_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    private void ExplorerBrowser_Loaded(object sender, RoutedEventArgs e)
     {
-        Debug.Print($"{nameof(ExplorerBrowser)} has been Loaded, currently {_items.Count()} items");
+        Debug.Print($"{nameof(ExplorerBrowser)} has been Loaded, current items {_items.Count}");
     }
 
     private void IconExtractor_Complete(object? sender, EventArgs e)
     {
-        Debug.Print($"{nameof(IconExtractor)} {TaskStatus.RanToCompletion.ToString()}: {_items.Count()} items" );
+        Debug.Print($"{nameof(IconExtractor)} {TaskStatus.RanToCompletion.ToString()}: {_items.Count} items" );
     }
 
     private void NativeTreeView_SelectionChanged(TreeView sender, TreeViewSelectionChangedEventArgs args)
     {
         if (args.AddedItems.Count > 0)
         {
-            Debug.Print($"{nameof(NativeTreeView_SelectionChanged)}: {args.ToString()}");
+            Debug.Print($"{nameof(NativeTreeView_SelectionChanged)}: {args}");
         }
     }
 
@@ -76,7 +74,7 @@ public sealed partial class ExplorerBrowser : UserControl
     {
         if (e.ClickedItem is ExplorerBrowserItem2 ebItem)
         {
-            Debug.Print($"{nameof(NativeGridView_ItemClick)}: {ebItem.ToString()}");
+            Debug.Print($"{nameof(NativeGridView_ItemClick)}: {ebItem}");
         }
     }
 
@@ -118,5 +116,5 @@ public record ExplorerBrowserItem2
         ItemId = new Shell32.PIDL(itemId);
     }
 
-    public override string? ToString() => base.ToString() + ItemId?.ToString();
+    public override string? ToString() => base.ToString() + ItemId;
 }
