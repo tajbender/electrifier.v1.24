@@ -26,41 +26,46 @@ public sealed partial class ExplorerBrowser : UserControl
     public ShellIconExtractor IconExtractor;
     public int IconSize = 32;
 
+    private ObservableCollection<ExplorerBrowserItem2> _items;
+
     public ExplorerBrowser()
     {
         InitializeComponent();
         DataContext = this;
         _currentFolder = ShellFolder.Desktop;
+        _items = new ObservableCollection<ExplorerBrowserItem2>();
+
         IconExtractor = new ShellIconExtractor(CurrentFolder, bmpSize: IconSize);
         IconExtractor.IconExtracted += (sender, args) =>
         {
-            var newItem = new ExplorerBrowserItem(args.ImageListIndex, args.ItemID);
+            _items.Add(new ExplorerBrowserItem2(args.ImageListIndex, args.ItemID));
         };
+        IconExtractor.IconExtracted += IconExtractor_IconExtracted;
+        IconExtractor.Complete += IconExtractor_Complete;
+        IconExtractor.Start();
 
         this.Loading += ExplorerBrowser_Loading;
         this.Loaded += ExplorerBrowser_Loaded;
     }
 
-    private void ExplorerBrowser_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
-    {
-        _ = IconExtractor.ImageList;
-    }
-
     private void ExplorerBrowser_Loading(Microsoft.UI.Xaml.FrameworkElement sender, object args)
     {
-        _= IconExtractor.ImageList;
+        Debug.Print($"{nameof(ExplorerBrowser)}.Loading");
     }
 
-    public record ExplorerBrowserItem
+    private void ExplorerBrowser_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
     {
-        public readonly int ImageListIndex = -1;
-        public readonly Shell32.PIDL ItemId;
+        Debug.Print($"{nameof(ExplorerBrowser)}.Loaded");
+    }
 
-        public ExplorerBrowserItem(int imageListIndex, Shell32.PIDL itemId)
-        {
-            ImageListIndex = imageListIndex;
-            ItemId = itemId;
-        }
+    private void IconExtractor_IconExtracted(object? sender, ShellIconExtractedEventArgs e)
+    {
+        //Debug.Print($"{nameof(IconExtractor_IconExtracted)}: { e.ToString() }");
+    }
+
+    private void IconExtractor_Complete(object? sender, EventArgs e)
+    {
+        Debug.Print($"{nameof(IconExtractor)} completed {_items.Count()} items");
     }
 
     private void NativeTreeView_SelectionChanged(TreeView sender, TreeViewSelectionChangedEventArgs args)
@@ -73,12 +78,11 @@ public sealed partial class ExplorerBrowser : UserControl
 
     private void NativeGridView_ItemClick(object sender, ItemClickEventArgs e)
     {
-        if (e.ClickedItem is ExplorerBrowserItem ebItem)
+        if (e.ClickedItem is ExplorerBrowserItem2 ebItem)
         {
             Debug.Print($"{nameof(NativeGridView_ItemClick)}: {ebItem.ToString()}");
         }
     }
-
 
     #region The following is original copy & paste from Vanara
     /// <summary>Event argument for The Navigated event</summary>
@@ -105,5 +109,18 @@ public sealed partial class ExplorerBrowser : UserControl
         public ShellItem? FailedLocation { get; set; }
     }
     #endregion
+}
 
+public record ExplorerBrowserItem2
+{
+    public readonly int ImageListIndex = -1;
+    public readonly Shell32.PIDL ItemId;
+
+    public ExplorerBrowserItem2(int imageListIndex, Shell32.PIDL itemId)
+    {
+        ImageListIndex = imageListIndex;
+        ItemId = itemId;
+    }
+
+    public override string ToString() => base.ToString() + ItemId?.ToString();
 }

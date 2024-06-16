@@ -9,7 +9,7 @@
     <Grid>
         <TreeView x:Name="TreeView"
                   SelectionMode="Single">
-            <TreeView.ItemTemplate>
+            <!--<TreeView.ItemTemplate>
                 <DataTemplate x:DataType="local:ExplorerBrowserItem">
                     <TreeViewItem HasUnrealizedChildren="{x:Bind HasUnrealizedChildren}"
                                   IsExpanded="{x:Bind IsExpanded}"
@@ -22,11 +22,11 @@
                             <TextBlock x:Name="TextBlock"
                                        Margin="5,0,5,0"
                                        Text="{x:Bind DisplayName}" />
-                            <!-- Visibility="{x:Bind DisplayNameVisibility}" -->
+                            --><!-- Visibility="{x:Bind DisplayNameVisibility}" --><!--
                         </StackPanel>
                     </TreeViewItem>
                 </DataTemplate>
-            </TreeView.ItemTemplate>
+            </TreeView.ItemTemplate>-->
         </TreeView>
     </Grid>
 </UserControl>

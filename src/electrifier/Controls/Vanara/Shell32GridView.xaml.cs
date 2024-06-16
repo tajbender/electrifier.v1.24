@@ -21,9 +21,9 @@ public sealed partial class Shell32GridView : UserControl
         // INFO: What is this? NativeGridView.IsSynchronizedWithCurrentItem = true;
     }
 
-    public void SetItemsSource(List<ExplorerBrowserItem> itemSourceCollection)
+    public void SetItemsSource(List<ExplorerBrowserItem2> items)
     {
-        var acv = new AdvancedCollectionView(itemSourceCollection, true);
+        var acv = new AdvancedCollectionView(items, true);
         acv.SortDescriptions.Add(new SortDescription("IsFolder", SortDirection.Descending));
         acv.SortDescriptions.Add(new SortDescription("DisplayName", SortDirection.Ascending));
 

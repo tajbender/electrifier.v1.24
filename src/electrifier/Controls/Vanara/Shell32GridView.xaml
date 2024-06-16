@@ -9,20 +9,21 @@
     <Grid>
         <Grid.Resources>
             <DataTemplate x:Name="ExplorerBrowserItemTemplate"
-                          x:DataType="local:ExplorerBrowserItem">
+                          ><!-- x:DataType="local:ExplorerBrowser.ExplorerBrowserItem" -->
+
                 <Grid>
                     <StackPanel Orientation="Vertical"
                                 Height="96"
                                 Width="72">
                         <ImageIcon x:Name="ImageIcon"
                                    MaxHeight="42"
-                                   Source="{x:Bind ImageIconSource}" />
-                        <TextBlock Text="{x:Bind DisplayName}"
+                                    /> <!-- Source="{x:Bind ImageIconSource}"-->
+                        <TextBlock 
                                    VerticalAlignment="Center"
                                    HorizontalTextAlignment="Center"
                                    Foreground="WhiteSmoke"
                                    FontSize="13" 
-                                   TextWrapping="Wrap"/>
+                                   TextWrapping="Wrap"/><!-- Text="{x:Bind DisplayName}" -->
                     </StackPanel>
                 </Grid>
             </DataTemplate>
