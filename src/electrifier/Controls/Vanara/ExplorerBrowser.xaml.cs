@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using Microsoft.UI.Xaml.Controls;
 using Vanara.PInvoke;
+using CommunityToolkit.WinUI.Collections;
+
 
 namespace electrifier.Controls.Vanara;
 
@@ -40,7 +42,6 @@ public sealed partial class ExplorerBrowser : UserControl
         {
             _items.Add(new ExplorerBrowserItem2(args.ImageListIndex, args.ItemID));
         };
-        IconExtractor.IconExtracted += IconExtractor_IconExtracted;
         IconExtractor.Complete += IconExtractor_Complete;
         IconExtractor.Start();
 
@@ -56,10 +57,6 @@ public sealed partial class ExplorerBrowser : UserControl
     private void ExplorerBrowser_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
     {
         Debug.Print($"{nameof(ExplorerBrowser)} has been Loaded, currently {_items.Count()} items");
-    }
-
-    private void IconExtractor_IconExtracted(object? sender, ShellIconExtractedEventArgs e)
-    {
     }
 
     private void IconExtractor_Complete(object? sender, EventArgs e)
