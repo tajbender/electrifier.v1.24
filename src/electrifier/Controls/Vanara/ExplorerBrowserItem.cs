@@ -16,7 +16,7 @@ public class ExplorerBrowserItem : ObservableRecipient
 
     public string DisplayName
     {
-        get; set;
+        get;
     }
     public bool IsFolder
     {
@@ -34,6 +34,7 @@ public class ExplorerBrowserItem : ObservableRecipient
     public ImageSource ImageIconSource
     {
         get;
+        private set;
     }
     private bool IsEnumerated
     {
@@ -61,12 +62,13 @@ public class ExplorerBrowserItem : ObservableRecipient
     // TODO: ExplorerBrowserItem.TreeNodeSelected = bool; => Initiate selection of this node
     // TODO: GridViewItem - Property
 
-    public ExplorerBrowserItem(ExplorerBrowser owner, ShellItem shItem, string? overrideDisplayName = default)
+    public ExplorerBrowserItem(ExplorerBrowser owner, ShellItem shItem)
     {
         Owner = owner;
         ShellItem = shItem ?? throw new ArgumentNullException(nameof(shItem));
         Children = new List<ExplorerBrowserItem>();
-        DisplayName = overrideDisplayName ?? (ShellItem.Name ?? throw new Exception("shItem Display Name"));
+        DisplayName = ShellItem.GetDisplayName(ShellItemDisplayString.NormalDisplay) ?? throw new Exception("shItem Display Name");
+        HasUnrealizedChildren = true;
         IsFolder = shItem.IsFolder;
         IsExpanded = true;
         IsSelected = false;
@@ -74,6 +76,17 @@ public class ExplorerBrowserItem : ObservableRecipient
         ImageIconSource = IsFolder
             ? DefaultFolderImage
             : DefaultFileImage;
+
+        _ = Task.Run(InitializeAsync);
+    }
+
+    public async Task InitializeAsync()
+    {
+
+        var attributes = await Task.Run(() => ShellItem.Attributes);
+        //var StorageCapMask = await Task.Run(() => attributes & ShellItemAttribute.StorageCapMask);
+
+        HasUnrealizedChildren = attributes.HasFlag(ShellItemAttribute.HasSubfolder);
     }
 
     internal IEnumerable<ShellItem> EnumerateChildren(ShellItem enumerationShellItem, FolderItemFilter filter)
