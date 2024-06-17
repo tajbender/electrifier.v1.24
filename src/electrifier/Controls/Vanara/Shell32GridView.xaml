@@ -14,13 +14,9 @@
                     <StackPanel Orientation="Vertical"
                                 Height="96"
                                 Width="72">
-                        <!-- <ImageIcon x:Name="ImageIcon"
+                         <ImageIcon x:Name="ImageIcon"
                                    MaxHeight="42"
-                                   Source="{x:Bind ImageSource}"/> -->
-                        <TextBlock x:Name="NewItemBox"
-                                   Height="42"
-                                   Text="Added new item"
-                                   TextWrapping="WrapWholeWords"/>
+                                   Source="ms-appx:///Assets/Views/Workbench/Shell32 Default unknown File_256x256-32.png"/>
                         <TextBlock VerticalAlignment="Center"
                                    HorizontalTextAlignment="Center"
                                    Foreground="WhiteSmoke"
