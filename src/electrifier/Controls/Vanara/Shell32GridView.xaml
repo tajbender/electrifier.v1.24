@@ -14,9 +14,9 @@
                     <StackPanel Orientation="Vertical"
                                 Height="96"
                                 Width="72">
-                         <ImageIcon x:Name="ImageIcon"
+                        <ImageIcon x:Name="ImageIcon"
                                    MaxHeight="42"
-                                   Source="ms-appx:///Assets/Views/Workbench/Shell32 Default unknown File_256x256-32.png"/>
+                                   Loaded="ImageIcon_Loaded" />
                         <TextBlock VerticalAlignment="Center"
                                    HorizontalTextAlignment="Center"
                                    Foreground="WhiteSmoke"

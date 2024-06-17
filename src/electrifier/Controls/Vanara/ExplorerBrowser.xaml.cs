@@ -21,8 +21,8 @@ public sealed partial class ExplorerBrowser : UserControl
         get => _currentFolder;
         set
         {
-            var ext = new ShellIconExtractor(value, IconSize);
-            ext.Start();
+            IconExtractor = new ShellIconExtractor(value, IconSize);
+            IconExtractor.Start();
         }
     }
 
@@ -37,7 +37,7 @@ public sealed partial class ExplorerBrowser : UserControl
         InitializeComponent();
         DataContext = this;
         _currentFolder = ShellFolder.Desktop;
-        _items = new ();
+        _items = [];
 
         Loading += ExplorerBrowser_Loading;
         Loaded += ExplorerBrowser_Loaded;
@@ -70,7 +70,7 @@ public sealed partial class ExplorerBrowser : UserControl
         GridView.SetItemsSource(_items);
     }
 
-    private void NativeTreeView_SelectionChanged(TreeView sender, TreeViewSelectionChangedEventArgs args)
+    private void NativeTreeView_SelectionChanged(TreeView _, TreeViewSelectionChangedEventArgs args)
     {
         if (args.AddedItems.Count > 0)
         {
@@ -78,7 +78,7 @@ public sealed partial class ExplorerBrowser : UserControl
         }
     }
 
-    private void NativeGridView_ItemClick(object sender, ItemClickEventArgs e)
+    private void NativeGridView_ItemClick(object _, ItemClickEventArgs e)
     {
         if (e.ClickedItem is ExplorerBrowserItem2 ebItem)
         {
@@ -97,7 +97,7 @@ public record ExplorerBrowserItem2
     public ExplorerBrowserItem2(int imageListIndex, Shell32.PIDL itemId)
     {
         if (itemId == Shell32.PIDL.Null)
-            throw new ArgumentException(nameof(itemId));
+            throw new ArgumentNullException(nameof(itemId));
 
         ImageListIndex = imageListIndex;
         ItemId = new Shell32.PIDL(itemId);

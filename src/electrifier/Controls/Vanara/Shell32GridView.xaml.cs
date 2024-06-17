@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using CommunityToolkit.WinUI.Collections;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace electrifier.Controls.Vanara;
 
@@ -29,5 +31,24 @@ public sealed partial class Shell32GridView : UserControl
     private string GetDebuggerDisplay()
     {
         return nameof(Shell32GridView) + ToString();
+    }
+
+    private static readonly Uri _defaultImageUri =
+        new("ms-appx:///Assets/Views/Workbench/Shell32 Default unknown File_256x256-32.png");
+    private void ImageIcon_Loaded(object sender, RoutedEventArgs e)
+    {
+        var img = sender as ImageIcon;
+
+        if (img == null)
+        {
+            return;
+        }
+
+        var bitmapImage = new BitmapImage
+        {
+            //img.Width = bitmapImage.DecodePixelWidth = 280;
+            UriSource = _defaultImageUri
+        };
+        img.Source = bitmapImage;
     }
 }
