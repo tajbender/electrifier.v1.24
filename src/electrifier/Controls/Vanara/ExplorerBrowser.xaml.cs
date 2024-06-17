@@ -3,6 +3,8 @@ using System.Diagnostics;
 using CommunityToolkit.WinUI.Collections;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Vanara.PInvoke;
 using Vanara.Windows.Shell;
 
@@ -28,14 +30,14 @@ public sealed partial class ExplorerBrowser : UserControl
     public int IconSize = 32;
 
     private readonly List<ExplorerBrowserItem2> _items;
-    private Shell32GridView _listView => ShellGridView;
+    private Shell32GridView GridView => ShellGridView;
 
     public ExplorerBrowser()
     {
         InitializeComponent();
         DataContext = this;
         _currentFolder = ShellFolder.Desktop;
-        _items = new List<ExplorerBrowserItem2>();
+        _items = new ();
 
         Loading += ExplorerBrowser_Loading;
         Loaded += ExplorerBrowser_Loaded;
@@ -58,12 +60,14 @@ public sealed partial class ExplorerBrowser : UserControl
     {
         Debug.Print($"{nameof(ExplorerBrowser)} has been Loaded, current items {_items.Count}");
 
-        _listView.SetItemsSource(_items);
+        GridView.SetItemsSource(_items);
     }
 
     private void IconExtractor_Complete(object? sender, EventArgs e)
     {
         Debug.Print($"{nameof(IconExtractor)} {TaskStatus.RanToCompletion.ToString()}: {_items.Count} items" );
+
+        GridView.SetItemsSource(_items);
     }
 
     private void NativeTreeView_SelectionChanged(TreeView sender, TreeViewSelectionChangedEventArgs args)
@@ -81,46 +85,55 @@ public sealed partial class ExplorerBrowser : UserControl
             Debug.Print($"{nameof(NativeGridView_ItemClick)}: {ebItem}");
         }
     }
-
-    #region The following is original copy & paste from Vanara
-    /// <summary>Event argument for The Navigated event</summary>
-    public class NavigatedEventArgs : EventArgs
-    {
-        /// <summary>The new location of the explorer browser</summary>
-        public ShellItem? NewLocation { get; set; }
-    }
-
-    /// <summary>Event argument for The Navigating event</summary>
-    public class NavigatingEventArgs : EventArgs
-    {
-        /// <summary>Set to 'True' to cancel the navigation.</summary>
-        public bool Cancel { get; set; }
-
-        /// <summary>The location being navigated to</summary>
-        public ShellItem? PendingLocation { get; set; }
-    }
-
-    /// <summary>Event argument for the NavigatinoFailed event</summary>
-    public class NavigationFailedEventArgs : EventArgs
-    {
-        /// <summary>The location the browser would have navigated to.</summary>
-        public ShellItem? FailedLocation { get; set; }
-    }
-    #endregion
 }
 
 public record ExplorerBrowserItem2
 {
     public readonly int ImageListIndex = -1;
     public readonly Shell32.PIDL ItemId = Shell32.PIDL.Null;
-    public readonly string? DisplayName;
+    public readonly string DisplayName;
+    // public readonly ImageSource ImageSource;
 
     public ExplorerBrowserItem2(int imageListIndex, Shell32.PIDL itemId)
     {
+        if (itemId == Shell32.PIDL.Null)
+            throw new ArgumentException(nameof(itemId));
+
         ImageListIndex = imageListIndex;
         ItemId = new Shell32.PIDL(itemId);
-        DisplayName = itemId.ToString();
+        
+        DisplayName = ItemId.ToString();
+
+        // var imageSource = new ImageSource();
+        // ImageSource = null;
     }
 
     public override string? ToString() => base.ToString() + ItemId;
 }
+
+
+#region The following is original copy & paste from Vanara
+/// <summary>Event argument for The Navigated event</summary>
+public class NavigatedEventArgs : EventArgs
+{
+    /// <summary>The new location of the explorer browser</summary>
+    public ShellItem? NewLocation { get; set; }
+}
+
+/// <summary>Event argument for The Navigating event</summary>
+public class NavigatingEventArgs : EventArgs
+{
+    /// <summary>Set to 'True' to cancel the navigation.</summary>
+    public bool Cancel { get; set; }
+
+    /// <summary>The location being navigated to</summary>
+    public ShellItem? PendingLocation { get; set; }
+}
+
+/// <summary>Event argument for the NavigatinoFailed event</summary>
+public class NavigationFailedEventArgs : EventArgs
+{
+    /// <summary>The location the browser would have navigated to.</summary>
+    public ShellItem? FailedLocation { get; set; }
+}
+#endregion
