@@ -16,7 +16,7 @@
                                 Width="72">
                         <ImageIcon x:Name="ImageIcon"
                                    MaxHeight="42"
-                                   Loaded="ImageIcon_Loaded" />
+                                   Source="{x:Bind BitmapImage}"/>
                         <TextBlock VerticalAlignment="Center"
                                    HorizontalTextAlignment="Center"
                                    Foreground="WhiteSmoke"

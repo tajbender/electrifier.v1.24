@@ -1,5 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
 using CommunityToolkit.WinUI.Collections;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -45,7 +47,7 @@ public sealed partial class ExplorerBrowser : UserControl
         IconExtractor = new ShellIconExtractor(CurrentFolder, bmpSize: IconSize);
         IconExtractor.IconExtracted += (sender, args) =>
         {
-            _items.Add(new ExplorerBrowserItem2(args.ImageListIndex, args.ItemID));
+            _items.Add(new ExplorerBrowserItem2(IconExtractor, args.ImageListIndex, args.ItemID));
         };
         IconExtractor.Complete += IconExtractor_Complete;
         IconExtractor.Start();
@@ -89,23 +91,36 @@ public sealed partial class ExplorerBrowser : UserControl
 
 public record ExplorerBrowserItem2
 {
-    public readonly int ImageListIndex = -1;
     public readonly Shell32.PIDL ItemId = Shell32.PIDL.Null;
     public readonly string DisplayName;
-    // public readonly ImageSource ImageSource;
+    public readonly BitmapImage BitmapImage;
 
-    public ExplorerBrowserItem2(int imageListIndex, Shell32.PIDL itemId)
+    public ExplorerBrowserItem2(ShellIconExtractor iconExtractor, int imageListIndex, Shell32.PIDL itemId)
     {
         if (itemId == Shell32.PIDL.Null)
             throw new ArgumentNullException(nameof(itemId));
 
-        ImageListIndex = imageListIndex;
         ItemId = new Shell32.PIDL(itemId);
-        
         DisplayName = ItemId.ToString();
 
-        // var imageSource = new ImageSource();
-        // ImageSource = null;
+        BitmapImage = new BitmapImage();
+        using (MemoryStream stream = new MemoryStream())
+        {
+            iconExtractor.ImageList[imageListIndex].Save(stream, ImageFormat.Bmp);
+            stream.Position = 0;
+            BitmapImage.SetSource(stream.AsRandomAccessStream());
+        }
+        //image.Source = bitmapImage;
+        
+
+        // INFO: https://stackoverflow.com/questions/76640972/convert-system-drawing-icon-to-microsoft-ui-xaml-imagesource
+
+//        SoftwareBitmap softwareBitmap = ...; // Your HBITMAP
+//// Create a SoftwareBitmapSource
+//        SoftwareBitmapSource bitmapSource = new SoftwareBitmapSource();
+//        await bitmapSource.SetBitmapAsync(softwareBitmap);
+//// Set the ImageSource for your WinUI3 Image control
+//        qrCodeImage.Source = bitmapSource;
     }
 
     public override string? ToString() => base.ToString() + ItemId;

@@ -33,6 +33,8 @@ public sealed partial class Shell32GridView : UserControl
         return nameof(Shell32GridView) + ToString();
     }
 
+    #region Experimental code
+
     private static readonly Uri _defaultImageUri =
         new("ms-appx:///Assets/Views/Workbench/Shell32 Default unknown File_256x256-32.png");
     private void ImageIcon_Loaded(object sender, RoutedEventArgs e)
@@ -51,4 +53,6 @@ public sealed partial class Shell32GridView : UserControl
         };
         img.Source = bitmapImage;
     }
+
+    #endregion
 }
