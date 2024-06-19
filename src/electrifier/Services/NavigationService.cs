@@ -22,6 +22,7 @@ using electrifier.Helpers;
 using electrifier.ViewModels;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace electrifier.Services;
@@ -122,21 +123,29 @@ public class NavigationService : INavigationService
     {
         var pageType = _pageService.GetPageType(pageKey);
 
-        if (_frame != null && (_frame.Content?.GetType() != pageType || (parameter != null && !parameter.Equals(_lastParameterUsed))))
+        try
         {
-            _frame.Tag = clearNavigation;
-            var vmBeforeNavigation = _frame.GetPageViewModel();
-            var navigated = _frame.Navigate(pageType, parameter);
-            if (navigated)
+            if (_frame != null && (_frame.Content?.GetType() != pageType || (parameter != null && !parameter.Equals(_lastParameterUsed))))
             {
-                _lastParameterUsed = parameter;
-                if (vmBeforeNavigation is INavigationAware navigationAware)
+                _frame.Tag = clearNavigation;
+                var vmBeforeNavigation = _frame.GetPageViewModel();
+                var navigated = _frame.Navigate(pageType, parameter);
+                if (navigated)
                 {
-                    navigationAware.OnNavigatedFrom();
+                    _lastParameterUsed = parameter;
+                    if (vmBeforeNavigation is INavigationAware navigationAware)
+                    {
+                        navigationAware.OnNavigatedFrom();
+                    }
                 }
-            }
 
-            return navigated;
+                return navigated;
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine(e);
+            throw;
         }
 
         return false;

@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Vanara.PInvoke;
 using Vanara.Windows.Shell;
+using static Vanara.PInvoke.Shell32.PIDL;
 
 namespace electrifier.Controls.Vanara;
 
@@ -31,7 +32,7 @@ public sealed partial class ExplorerBrowser : UserControl
     public ShellIconExtractor IconExtractor;
     public int IconSize = 32;
 
-    private readonly List<ExplorerBrowserItem2> _items;
+    public ObservableCollection<ExplorerBrowserItem2> Items;
     private Shell32GridView GridView => ShellGridView;
 
     public ExplorerBrowser()
@@ -39,7 +40,7 @@ public sealed partial class ExplorerBrowser : UserControl
         InitializeComponent();
         DataContext = this;
         _currentFolder = ShellFolder.Desktop;
-        _items = [];
+        Items = [];
 
         Loading += ExplorerBrowser_Loading;
         Loaded += ExplorerBrowser_Loaded;
@@ -47,7 +48,10 @@ public sealed partial class ExplorerBrowser : UserControl
         IconExtractor = new ShellIconExtractor(CurrentFolder, bmpSize: IconSize);
         IconExtractor.IconExtracted += (sender, args) =>
         {
-            _items.Add(new ExplorerBrowserItem2(IconExtractor, args.ImageListIndex, args.ItemID));
+            //lock(_items)
+            //{
+                Items.Add(new ExplorerBrowserItem2(IconExtractor, args.ImageListIndex, args.ItemID));
+            //}
         };
         IconExtractor.Complete += IconExtractor_Complete;
         IconExtractor.Start();
@@ -55,21 +59,21 @@ public sealed partial class ExplorerBrowser : UserControl
 
     private void ExplorerBrowser_Loading(FrameworkElement sender, object args)
     {
-        Debug.Print($"{nameof(ExplorerBrowser)} is Loading, current items {_items.Count}");
+        Debug.Print($"{nameof(ExplorerBrowser)} is Loading, current items {Items.Count}");
     }
 
     private void ExplorerBrowser_Loaded(object sender, RoutedEventArgs e)
     {
-        Debug.Print($"{nameof(ExplorerBrowser)} has been Loaded, current items {_items.Count}");
+        Debug.Print($"{nameof(ExplorerBrowser)} has been Loaded, current items {Items.Count}");
 
-        GridView.SetItemsSource(_items);
+        //GridView.SetItemsSource(_items);
     }
 
     private void IconExtractor_Complete(object? sender, EventArgs e)
     {
-        Debug.Print($"{nameof(IconExtractor)} {TaskStatus.RanToCompletion.ToString()}: {_items.Count} items" );
+        Debug.Print($"{nameof(IconExtractor)} {TaskStatus.RanToCompletion.ToString()}: {Items.Count} items" );
 
-        GridView.SetItemsSource(_items);
+        //GridView.SetItemsSource(_items);
     }
 
     private void NativeTreeView_SelectionChanged(TreeView _, TreeViewSelectionChangedEventArgs args)
@@ -91,25 +95,34 @@ public sealed partial class ExplorerBrowser : UserControl
 
 public record ExplorerBrowserItem2
 {
-    public readonly Shell32.PIDL ItemId = Shell32.PIDL.Null;
+    public readonly Shell32.PIDL ItemId = Null;
     public readonly string DisplayName;
-    public readonly BitmapImage BitmapImage;
+    public readonly BitmapImage? BitmapImage;
 
     public ExplorerBrowserItem2(ShellIconExtractor iconExtractor, int imageListIndex, Shell32.PIDL itemId)
     {
-        if (itemId == Shell32.PIDL.Null)
-            throw new ArgumentNullException(nameof(itemId));
-
-        ItemId = new Shell32.PIDL(itemId);
-        DisplayName = ItemId.ToString();
-
-        BitmapImage = new BitmapImage();
-        using (MemoryStream stream = new MemoryStream())
+        Debug.Assert(itemId != Null);
+        if (itemId == Null)
         {
-            iconExtractor.ImageList[imageListIndex].Save(stream, ImageFormat.Bmp);
-            stream.Position = 0;
-            BitmapImage.SetSource(stream.AsRandomAccessStream());
+            Debug.Print($"{nameof(ItemId)} is null"); // TODO: throw new ArgumentNullException(nameof(itemId));
         }
+
+        ItemId = itemId; //new Shell32.PIDL(itemId);
+        DisplayName = ItemId.ToString(Shell32.SIGDN.SIGDN_NORMALDISPLAY);
+        BitmapImage = null;
+
+        //if (imageListIndex < 0)
+        //{
+        //    BitmapImage = null;  // Todo: Load default image
+        //}
+
+        //BitmapImage = new BitmapImage();
+        //using (MemoryStream stream = new MemoryStream())
+        //{
+        //    iconExtractor.ImageList[imageListIndex].Save(stream, ImageFormat.Bmp);
+        //    stream.Position = 0;
+        //    BitmapImage.SetSource(stream.AsRandomAccessStream());
+        //}
         //image.Source = bitmapImage;
         
 

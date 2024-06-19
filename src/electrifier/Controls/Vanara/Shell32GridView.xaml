@@ -48,7 +48,7 @@
     </Grid>
 </UserControl>
 
-<!-- 
+<!-- Windows Community Toolkit Icon extensions:
 <SwipeItems
     xmlns:ui="using:CommunityToolkit.WinUI"
     Mode="Reveal">

@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using CommunityToolkit.WinUI.Collections;
 using Microsoft.UI.Xaml;
@@ -12,9 +13,9 @@ public sealed partial class Shell32GridView : UserControl
     public GridView NativeGridView => GridView;
     //public object ItemsSource => NativeGridView.ItemsSource;
 
-    public List<ExplorerBrowserItem2> GridShellItems
+    public ObservableCollection<ExplorerBrowserItem2> GridShellItems
     {
-        get => (List<ExplorerBrowserItem2>)GetValue(GridShellItemsProperty);
+        get => (ObservableCollection<ExplorerBrowserItem2>)GetValue(GridShellItemsProperty);
         set => SetValue(GridShellItemsProperty, value);
     }
 
@@ -27,18 +28,14 @@ public sealed partial class Shell32GridView : UserControl
 
         NativeGridView.IsItemClickEnabled = true;
         NativeGridView.SelectionMode = ListViewSelectionMode.Single;
+        NativeGridView.ItemsSource = GridShellItems;
 
         // INFO: What is this? NativeGridView.IsSynchronizedWithCurrentItem = true;
     }
 
-    public void SetItemsSource(List<ExplorerBrowserItem2> items)
-    {
-        GridShellItems = items;
-    }
-
     private string GetDebuggerDisplay()
     {
-        return nameof(Shell32GridView) + ToString();
+        return $"{nameof(Shell32GridView)} + \", \" + {GridShellItems.Count()} items: + {ToString()}";
     }
 
     #region Experimental code
