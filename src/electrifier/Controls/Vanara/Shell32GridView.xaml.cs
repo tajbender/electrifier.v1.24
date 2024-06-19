@@ -35,7 +35,7 @@ public sealed partial class Shell32GridView : UserControl
 
     private string GetDebuggerDisplay()
     {
-        return $"{nameof(Shell32GridView)} + \", \" + {GridShellItems.Count()} items: + {ToString()}";
+        return $"{nameof(Shell32GridView)} + \", \" + {GridShellItems.Count} items: + {ToString()}";
     }
 
     #region Experimental code

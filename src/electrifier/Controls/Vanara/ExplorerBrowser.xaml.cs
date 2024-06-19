@@ -71,7 +71,7 @@ public sealed partial class ExplorerBrowser : UserControl
 
     private void IconExtractor_Complete(object? sender, EventArgs e)
     {
-        Debug.Print($"{nameof(IconExtractor)} {TaskStatus.RanToCompletion.ToString()}: {Items.Count} items" );
+        Debug.Print($"{nameof(IconExtractor) + TaskStatus.RanToCompletion.ToString()}: {Items.Count} items" );
 
         //GridView.SetItemsSource(_items);
     }
