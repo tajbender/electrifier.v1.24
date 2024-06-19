@@ -10,7 +10,15 @@ namespace electrifier.Controls.Vanara;
 public sealed partial class Shell32GridView : UserControl
 {
     public GridView NativeGridView => GridView;
-    public object ItemsSource => NativeGridView.ItemsSource;
+    //public object ItemsSource => NativeGridView.ItemsSource;
+
+    public List<ExplorerBrowserItem2> GridShellItems
+    {
+        get => (List<ExplorerBrowserItem2>)GetValue(GridShellItemsProperty);
+        set => SetValue(GridShellItemsProperty, value);
+    }
+
+    public static readonly DependencyProperty GridShellItemsProperty = DependencyProperty.Register(nameof(GridShellItems), typeof(List<ExplorerBrowserItem2>), typeof(Shell32GridView), new PropertyMetadata(default(List<ExplorerBrowserItem2>)));
 
     public Shell32GridView()
     {
@@ -25,7 +33,7 @@ public sealed partial class Shell32GridView : UserControl
 
     public void SetItemsSource(List<ExplorerBrowserItem2> items)
     {
-        NativeGridView.ItemsSource = items;
+        GridShellItems = items;
     }
 
     private string GetDebuggerDisplay()

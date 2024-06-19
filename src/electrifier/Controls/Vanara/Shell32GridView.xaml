@@ -28,8 +28,8 @@
             </DataTemplate>
         </Grid.Resources>
         <GridView x:Name="GridView"
-                  ItemTemplate="{StaticResource ExplorerBrowserItemTemplate}">
-            <!--                   ItemsSource="{x:Bind GridShellItems, Mode=OneWay}" -->
+                  ItemTemplate="{StaticResource ExplorerBrowserItemTemplate}"
+                  ItemsSource="{x:Bind GridShellItems, Mode=OneWay}">
             <GridView.ItemContainerStyle>
                 <Style TargetType="GridViewItem"
                        BasedOn="{StaticResource DefaultGridViewItemStyle}">
@@ -47,3 +47,11 @@
         </GridView>
     </Grid>
 </UserControl>
+
+<!-- 
+<SwipeItems
+    xmlns:ui="using:CommunityToolkit.WinUI"
+    Mode="Reveal">
+    <SwipeItem Text="Send" IconSource="{ui:BitmapIconSource Source=/Assets/myicon.png}"/>
+</SwipeItems>    
+    -->
