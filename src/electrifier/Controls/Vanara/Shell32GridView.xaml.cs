@@ -28,14 +28,14 @@ public sealed partial class Shell32GridView : UserControl
 
         NativeGridView.IsItemClickEnabled = true;
         NativeGridView.SelectionMode = ListViewSelectionMode.Single;
-        NativeGridView.ItemsSource = GridShellItems;
+        //NativeGridView.ItemsSource = GridShellItems;
 
         // INFO: What is this? NativeGridView.IsSynchronizedWithCurrentItem = true;
     }
 
     private string GetDebuggerDisplay()
     {
-        return $"{nameof(Shell32GridView)} + \", \" + {GridShellItems.Count} items: + {ToString()}";
+        return $"{nameof(Shell32GridView)} + \", \" + {GridShellItems.Count()} items: + {ToString()}";
     }
 
     #region Experimental code

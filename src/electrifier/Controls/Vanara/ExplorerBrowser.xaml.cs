@@ -33,7 +33,7 @@ public sealed partial class ExplorerBrowser : UserControl
     public int IconSize = 32;
 
     public ObservableCollection<ExplorerBrowserItem2> Items;
-    private Shell32GridView GridView => ShellGridView;
+    //private Shell32GridView ShellGridView => GridView;
 
     public ExplorerBrowser()
     {
@@ -50,7 +50,7 @@ public sealed partial class ExplorerBrowser : UserControl
         {
             //lock(_items)
             //{
-                Items.Add(new ExplorerBrowserItem2(IconExtractor, args.ImageListIndex, args.ItemID));
+                Items.Add(new ExplorerBrowserItem2(args.ImageListIndex, args.ItemID));
             //}
         };
         IconExtractor.Complete += IconExtractor_Complete;
@@ -71,7 +71,9 @@ public sealed partial class ExplorerBrowser : UserControl
 
     private void IconExtractor_Complete(object? sender, EventArgs e)
     {
-        Debug.Print($"{nameof(IconExtractor) + TaskStatus.RanToCompletion.ToString()}: {Items.Count} items" );
+        Debug.Print($"{nameof(IconExtractor)} {TaskStatus.RanToCompletion.ToString()}: {Items.Count} items" );
+
+        //GridView.NativeGridView.ItemsSource = Items;
 
         //GridView.SetItemsSource(_items);
     }
@@ -99,7 +101,7 @@ public record ExplorerBrowserItem2
     public readonly string DisplayName;
     public readonly BitmapImage? BitmapImage;
 
-    public ExplorerBrowserItem2(ShellIconExtractor iconExtractor, int imageListIndex, Shell32.PIDL itemId)
+    public ExplorerBrowserItem2(int imageListIndex, Shell32.PIDL itemId)
     {
         Debug.Assert(itemId != Null);
         if (itemId == Null)
@@ -107,9 +109,11 @@ public record ExplorerBrowserItem2
             Debug.Print($"{nameof(ItemId)} is null"); // TODO: throw new ArgumentNullException(nameof(itemId));
         }
 
-        ItemId = itemId; //new Shell32.PIDL(itemId);
+        ItemId = new Shell32.PIDL(itemId);
         DisplayName = ItemId.ToString(Shell32.SIGDN.SIGDN_NORMALDISPLAY);
         BitmapImage = null;
+
+        Debug.Print(DisplayName);
 
         //if (imageListIndex < 0)
         //{

@@ -32,7 +32,7 @@
                   ItemsSource="{x:Bind GridShellItems, Mode=OneWay}">
             <GridView.ItemContainerStyle>
                 <Style TargetType="GridViewItem"
-                       BasedOn="{StaticResource DefaultGridViewItemStyle}">
+                       ><!-- BasedOn="{StaticResource DefaultGridViewItemStyle}" -->
                     <Setter Property="Margin"
                             Value="5, 5, 5, 5" />
                 </Style>
