@@ -34,13 +34,17 @@ public sealed partial class ExplorerBrowser : UserControl
 
     public ObservableCollection<ExplorerBrowserItem2> Items;
     //private Shell32GridView ShellGridView => GridView;
-
+    
+    public Microsoft.UI.Dispatching.DispatcherQueue TheDispatcher { get; set; }
+    
     public ExplorerBrowser()
     {
         InitializeComponent();
         DataContext = this;
         _currentFolder = ShellFolder.Desktop;
         Items = [];
+        TheDispatcher = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+        acv = new AdvancedCollectionView(Items, true);
 
         Loading += ExplorerBrowser_Loading;
         Loaded += ExplorerBrowser_Loaded;
@@ -62,6 +66,8 @@ public sealed partial class ExplorerBrowser : UserControl
         Debug.Print($"{nameof(ExplorerBrowser)} is Loading, current items {Items.Count}");
     }
 
+    private AdvancedCollectionView acv;
+
     private void ExplorerBrowser_Loaded(object sender, RoutedEventArgs e)
     {
         Debug.Print($"{nameof(ExplorerBrowser)} has been Loaded, current items {Items.Count}");
@@ -73,9 +79,20 @@ public sealed partial class ExplorerBrowser : UserControl
     {
         Debug.Print($"{nameof(IconExtractor)} {TaskStatus.RanToCompletion.ToString()}: {Items.Count} items" );
 
-        //GridView.NativeGridView.ItemsSource = Items;
-
-        //GridView.SetItemsSource(_items);
+        try
+        {
+            TheDispatcher.TryEnqueue(() =>
+            {
+                IconExtractor.Cancel();
+                acv = new AdvancedCollectionView(Items, true);
+                ShellGridView.NativeGridView.ItemsSource = acv;
+            });
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine(exception);
+            throw;
+        }
     }
 
     private void NativeTreeView_SelectionChanged(TreeView _, TreeViewSelectionChangedEventArgs args)

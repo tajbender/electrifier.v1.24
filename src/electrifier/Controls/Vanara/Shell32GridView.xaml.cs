@@ -7,19 +7,19 @@ using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace electrifier.Controls.Vanara;
 
-[DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(), nq}}")]
+//[DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(), nq}}")]
 public sealed partial class Shell32GridView : UserControl
 {
     public GridView NativeGridView => GridView;
     //public object ItemsSource => NativeGridView.ItemsSource;
 
-    public ObservableCollection<ExplorerBrowserItem2> GridShellItems
-    {
-        get => (ObservableCollection<ExplorerBrowserItem2>)GetValue(GridShellItemsProperty);
-        set => SetValue(GridShellItemsProperty, value);
-    }
+    //public ObservableCollection<ExplorerBrowserItem2> GridShellItems
+    //{
+    //    get => (ObservableCollection<ExplorerBrowserItem2>)GetValue(GridShellItemsProperty);
+    //    set => SetValue(GridShellItemsProperty, value);
+    //}
 
-    public static readonly DependencyProperty GridShellItemsProperty = DependencyProperty.Register(nameof(GridShellItems), typeof(List<ExplorerBrowserItem2>), typeof(Shell32GridView), new PropertyMetadata(default(List<ExplorerBrowserItem2>)));
+    //public static readonly DependencyProperty GridShellItemsProperty = DependencyProperty.Register(nameof(GridShellItems), typeof(List<ExplorerBrowserItem2>), typeof(Shell32GridView), new PropertyMetadata(default(List<ExplorerBrowserItem2>)));
 
     public Shell32GridView()
     {
@@ -33,10 +33,10 @@ public sealed partial class Shell32GridView : UserControl
         // INFO: What is this? NativeGridView.IsSynchronizedWithCurrentItem = true;
     }
 
-    private string GetDebuggerDisplay()
-    {
-        return $"{nameof(Shell32GridView)} + \", \" + {GridShellItems.Count()} items: + {ToString()}";
-    }
+    //private string GetDebuggerDisplay()
+    //{
+    //    return $"{nameof(Shell32GridView)} + \", \" + {GridShellItems.Count()} items: + {ToString()}";
+    //}
 
     #region Experimental code
 

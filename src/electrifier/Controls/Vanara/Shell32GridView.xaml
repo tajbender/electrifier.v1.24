@@ -29,7 +29,7 @@
         </Grid.Resources>
         <GridView x:Name="GridView"
                   ItemTemplate="{StaticResource ExplorerBrowserItemTemplate}"
-                  ItemsSource="{x:Bind GridShellItems, Mode=OneWay}">
+                  >
             <GridView.ItemContainerStyle>
                 <Style TargetType="GridViewItem"
                        ><!-- BasedOn="{StaticResource DefaultGridViewItemStyle}" -->
