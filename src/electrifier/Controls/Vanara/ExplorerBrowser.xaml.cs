@@ -33,7 +33,6 @@ public sealed partial class ExplorerBrowser : UserControl
     public int IconSize = 32;
 
     public ObservableCollection<ExplorerBrowserItem2> Items;
-    //private Shell32GridView ShellGridView => GridView;
     
     public Microsoft.UI.Dispatching.DispatcherQueue TheDispatcher { get; set; }
     
@@ -48,22 +47,22 @@ public sealed partial class ExplorerBrowser : UserControl
 
         Loading += ExplorerBrowser_Loading;
         Loaded += ExplorerBrowser_Loaded;
+    }
+
+    private void ExplorerBrowser_Loading(FrameworkElement sender, object args)
+    {
+        Debug.Print($"{nameof(ExplorerBrowser)} is Loading, current items {Items.Count}");
 
         IconExtractor = new ShellIconExtractor(CurrentFolder, bmpSize: IconSize);
         IconExtractor.IconExtracted += (sender, args) =>
         {
             //lock(_items)
             //{
-                Items.Add(new ExplorerBrowserItem2(args.ImageListIndex, args.ItemID));
+            Items.Add(new ExplorerBrowserItem2(args.ImageListIndex, args.ItemID));
             //}
         };
         IconExtractor.Complete += IconExtractor_Complete;
         IconExtractor.Start();
-    }
-
-    private void ExplorerBrowser_Loading(FrameworkElement sender, object args)
-    {
-        Debug.Print($"{nameof(ExplorerBrowser)} is Loading, current items {Items.Count}");
     }
 
     private AdvancedCollectionView acv;
@@ -71,13 +70,11 @@ public sealed partial class ExplorerBrowser : UserControl
     private void ExplorerBrowser_Loaded(object sender, RoutedEventArgs e)
     {
         Debug.Print($"{nameof(ExplorerBrowser)} has been Loaded, current items {Items.Count}");
-
-        //GridView.SetItemsSource(_items);
     }
 
     private void IconExtractor_Complete(object? sender, EventArgs e)
     {
-        Debug.Print($"{nameof(IconExtractor)} {TaskStatus.RanToCompletion.ToString()}: {Items.Count} items" );
+        Debug.Print($"{nameof(IconExtractor)} {TaskStatus.RanToCompletion}: {Items.Count} items" );
 
         try
         {
