@@ -38,8 +38,30 @@
             </AppBarButton>
             <AppBarSeparator />
             <AppBarButton Icon="Cut" Label="Cut" />
-            <AppBarButton Icon="Copy" Label="Copy" />
-            <AppBarButton Icon="Paste" Label="Paste" />
+            <AppBarButton Icon="Copy" Label="Copy" >
+                <AppBarButton.Flyout>
+                    <Flyout>
+                        <StackPanel>
+                            <AppBarButton Icon="Important" Label="Pathname" />
+                            <AppBarButton Icon="Important" Label="convert to image..." />
+                            <AppBarButton Icon="Important" Label="convert to pdf..." />
+                            <AppBarButton Icon="Important" Label="convert to document..." />
+                        </StackPanel>
+                    </Flyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
+            <AppBarButton Icon="Paste" Label="Paste" >
+                <AppBarButton.Flyout>
+                    <Flyout>
+                        <StackPanel>
+                            <AppBarButton Icon="Important" Label="Pathname" />
+                            <AppBarButton Icon="Important" Label="image file..." />
+                            <AppBarButton Icon="Important" Label="pdf file..." />
+                            <AppBarButton Icon="Important" Label="pdf file..." />
+                        </StackPanel>
+                    </Flyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
             <AppBarButton Icon="Rename" Label="Rename" />
             <AppBarButton Icon="Share" Label="Share" />
             <AppBarButton Icon="Delete" Label="Delete" />
@@ -245,6 +267,7 @@
                 </CommandBar>
             </Grid>
         </SplitView>
+        <!-- the right side of the explorer, which is currently just a placeholder -->
         <Border Grid.Column="1"
                 Grid.Row="1"
                 MinWidth="192"
